@@ -37,34 +37,42 @@ export function CateringPackages() {
           <p className="text-charcoal/60 max-w-2xl mx-auto font-light">আপনার বিশেষ অনুষ্ঠানের জন্য আমরা সাজিয়েছি সেরা কিছু সাশ্রয়ী প্যাকেজ।</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {packages.map((pkg, idx) => (
             <motion.div
               key={pkg.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className="relative group bg-white p-10 rounded-[48px] shadow-sm hover:shadow-2xl transition-all border border-accent/20"
+              className="relative group "
             >
-              <div className={`${pkg.color} w-16 h-16 rounded-[24px] flex items-center justify-center text-white mb-8 border-2 border-accent/20 shadow-lg group-hover:rotate-6 transition-transform`}>
-                <pkg.icon className="w-8 h-8" />
-              </div>
-              <h3 className="text-2xl font-display font-bold mb-2">{pkg.name}</h3>
-              <p className="text-primary text-3xl font-black mb-8">৳{pkg.price}</p>
-              
-              <ul className="space-y-4 mb-12">
-                {pkg.features.map((feature, fIdx) => (
-                  <li key={fIdx} className="flex items-center gap-3 text-charcoal/70 font-light">
-                    <CheckCircle2 className="w-5 h-5 text-accent shrink-0" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
+               <div className="absolute inset-0 bg-primary/5 rounded-[3rem] translate-y-4 translate-x-2 group-hover:translate-y-6 group-hover:translate-x-4 transition-transform duration-500" />
+               <div className="relative bg-white p-12 rounded-[3rem] shadow-premium hover:shadow-strong transition-all border border-accent/10 h-full flex flex-col">
+                <div className={`${pkg.color} w-20 h-20 rounded-[2rem] flex items-center justify-center text-white mb-10 border border-white/20 shadow-xl group-hover:scale-110 transition-transform`}>
+                  <pkg.icon className="w-10 h-10" />
+                </div>
+                <h3 className="text-3xl font-display font-bold mb-3">{pkg.name}</h3>
+                <div className="flex items-baseline gap-1 mb-10">
+                  <span className="text-primary text-4xl font-black">৳{pkg.price.split('/')[0]}</span>
+                  <span className="text-charcoal/30 text-sm font-bold uppercase tracking-widest">/ জন</span>
+                </div>
+                
+                <ul className="space-y-5 mb-12 flex-grow">
+                  {pkg.features.map((feature, fIdx) => (
+                    <li key={fIdx} className="flex items-center gap-4 text-charcoal/70">
+                      <div className="w-6 h-6 rounded-full bg-accent/10 flex items-center justify-center text-accent shrink-0">
+                        <CheckCircle2 className="w-4 h-4" />
+                      </div>
+                      <span className="text-sm font-medium">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
 
-              <button className="w-full py-4 rounded-2xl bg-charcoal text-white font-bold hover:bg-primary transition-all shadow-lg">
-                প্যাকেজটি বেছে নিন
-              </button>
+                <button className="w-full py-5 rounded-[2rem] bg-charcoal text-white font-black uppercase tracking-widest text-xs hover:bg-primary transition-all shadow-xl shadow-charcoal/10 active:scale-95">
+                  প্যাকেজটি বেছে নিন
+                </button>
+              </div>
             </motion.div>
           ))}
         </div>

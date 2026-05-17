@@ -189,98 +189,63 @@ export function AdminDashboard() {
       ) : (
         <AnimatePresence mode="wait">
           {activeSubTab === 'orders' ? (
-            <motion.div key="orders" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-6">
+            <motion.div key="orders" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
               {orders.length === 0 ? (
-                <div className="text-center py-20 bg-white rounded-[40px] border border-dashed border-accent/20">
+                <div className="text-center py-24 bg-white rounded-[40px] border border-dashed border-accent/20">
                    <ShoppingBag className="w-16 h-16 mx-auto mb-4 text-charcoal/10" />
                    <p className="text-charcoal/40 font-bold uppercase tracking-widest text-sm">কোনো অর্ডার পাওয়া যায়নি</p>
                 </div>
-              ) : orders.map(order => (
-                <div key={order.id} className="bg-white p-8 md:p-10 rounded-[40px] shadow-sm border border-accent/10 hover:shadow-xl transition-all group overflow-hidden relative">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                  
-                  <div className="flex flex-col lg:flex-row justify-between gap-10 relative z-10">
-                    <div className="flex-grow space-y-6">
-                      <div className="flex items-center gap-4">
-                        <span className={cn("px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm", STATUS_MAP[order.status]?.color || "bg-gray-100 text-gray-700 border-gray-200")}>
-                          {STATUS_MAP[order.status]?.label || order.status}
-                        </span>
-                        <span className="text-charcoal/30 text-xs font-bold leading-none flex items-center gap-2">
-                           <Clock className="w-3 h-3" />
-                          {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString() : new Date(order.createdAt).toLocaleString()}
-                        </span>
-                      </div>
-                      
-                      <div>
-                        <h3 className="text-2xl font-display font-bold text-charcoal group-hover:text-primary transition-colors">{order.customerName || 'Anonymous Client'}</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-3 mt-4 text-sm text-charcoal/60">
-                          <p className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-cream flex items-center justify-center text-primary"><Phone className="w-4 h-4" /></div>
-                            <span className="font-bold">{order.phone}</span>
-                          </p>
-                          <p className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-cream flex items-center justify-center text-primary"><Calendar className="w-4 h-4" /></div>
-                            <span className="font-bold">{order.eventDate} ({order.eventType || 'N/A'})</span>
-                          </p>
-                          <p className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-cream flex items-center justify-center text-primary"><Users className="w-4 h-4" /></div>
-                            <span className="font-bold">{order.guestCount} Guests</span>
-                          </p>
-                          <p className="flex items-center gap-3 sm:col-span-2">
-                            <div className="w-8 h-8 rounded-xl bg-cream flex items-center justify-center text-primary"><MapPin className="w-4 h-4" /></div>
-                            <span className="font-light">{order.address}</span>
-                          </p>
+              ) : (
+                <div className="overflow-hidden bg-white rounded-[3rem] border border-accent/10 shadow-premium">
+                  <div className="hidden lg:grid grid-cols-12 gap-4 p-8 bg-charcoal text-[10px] uppercase font-black tracking-[0.2em] text-white/40">
+                    <div className="col-span-3">Customer</div>
+                    <div className="col-span-2 text-center">Status</div>
+                    <div className="col-span-2 text-center">Event Date</div>
+                    <div className="col-span-2 text-center">Guests</div>
+                    <div className="col-span-2 text-right">Revenue</div>
+                    <div className="col-span-1"></div>
+                  </div>
+                  {orders.map((order, idx) => (
+                    <div key={order.id} className={cn("grid grid-cols-1 lg:grid-cols-12 gap-4 p-8 border-b border-accent/5 hover:bg-primary/5 transition-colors items-center", idx === orders.length - 1 && "border-0")}>
+                      <div className="col-span-3 flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-cream flex items-center justify-center text-primary font-black shadow-sm shrink-0">
+                           {order.customerName?.charAt(0) || 'A'}
+                        </div>
+                        <div>
+                          <p className="font-bold text-charcoal">{order.customerName || 'Anonymous'}</p>
+                          <p className="text-[10px] text-charcoal/30 flex items-center gap-1 font-mono">{order.phone}</p>
                         </div>
                       </div>
-
-                      <div className="pt-6 border-t border-accent/5">
-                        <p className="font-black text-[10px] mb-4 text-primary uppercase tracking-[0.2em] flex items-center gap-2">
-                          <UtensilsCrossed className="w-3 h-3" /> অর্ডার ডিটেইলস:
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {order.items?.map((item, idx) => (
-                            <div key={idx} className="text-[11px] font-bold text-charcoal/70 bg-cream border border-accent/10 px-3 py-1.5 rounded-xl flex items-center gap-2">
-                              <div className="w-5 h-5 bg-primary/10 rounded-lg flex items-center justify-center text-[10px] text-primary">{item.quantity}</div>
-                              {item.name}
-                            </div>
-                          ))}
-                        </div>
-                        {order.notes && (
-                          <div className="mt-4 p-4 bg-orange-50/50 rounded-2xl border border-orange-100 italic text-sm text-charcoal/60">
-                             <strong>Notes:</strong> {order.notes}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-4 justify-between lg:min-w-[280px] lg:border-l lg:border-accent/5 lg:pl-10">
-                      <div className="text-right">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-charcoal/30">Total Revenue</span>
-                        <p className="text-4xl font-display font-black text-primary mt-1">৳{order.totalAmount}</p>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-charcoal/40 ml-1">Update Progress</label>
+                      <div className="col-span-2 flex justify-center">
                         <select 
                           value={order.status} 
                           onChange={(e) => handleStatusUpdate(order.id, e.target.value)} 
-                          className="w-full p-4 rounded-2xl bg-cream border-2 border-transparent focus:border-primary focus:outline-none text-sm font-bold cursor-pointer transition-all shadow-inner"
+                          className={cn("px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border border-transparent focus:outline-none cursor-pointer transition-all w-full text-center", STATUS_MAP[order.status]?.color || "bg-gray-100 text-gray-700")}
                         >
-                          <option value="pending">Pending Review</option>
-                          <option value="confirmed">Order Confirmed</option>
-                          <option value="delivering">In Delivery</option>
-                          <option value="completed">Work Completed</option>
-                          <option value="cancelled">Cancelled</option>
+                           {Object.entries(STATUS_MAP).map(([key, val]) => (
+                             <option key={key} value={key} className="bg-white text-charcoal">{val.label}</option>
+                           ))}
                         </select>
-                        
-                        <button onClick={() => handleDeleteItem('order', order.id)} className="w-full flex items-center justify-center gap-2 py-4 text-red-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all text-sm font-bold uppercase tracking-widest">
-                          <Trash2 className="w-4 h-4" /> Permanently Delete
+                      </div>
+                      <div className="col-span-2 text-center text-xs font-bold text-charcoal/60">
+                        {order.eventDate}
+                      </div>
+                      <div className="col-span-2 text-center">
+                        <span className="bg-cream px-3 py-1 rounded-lg text-xs font-black text-primary border border-accent/10">{order.guestCount} G</span>
+                      </div>
+                      <div className="col-span-2 text-right">
+                         <p className="text-xl font-display font-black text-primary">৳{order.totalAmount}</p>
+                      </div>
+                      <div className="col-span-1 flex justify-end">
+                        <button onClick={() => handleDeleteItem('order', order.id)} className="p-3 text-charcoal/20 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                          <Trash2 className="w-5 h-5" />
                         </button>
                       </div>
+                      {/* Expansion row for details if needed could go here, but keeping it mission-control style */}
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </motion.div>
           ) : (
             <motion.div key="menu" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>

@@ -15,10 +15,13 @@ const ai = new GoogleGenAI({
   }
 });
 
-async function startServer() {
-  const app = express();
-  const PORT = 3000;
+const app = express();
 
+export { app };
+
+async function startServer() {
+  const PORT = 3000;
+  
   app.use(express.json());
 
   // API Check
@@ -119,9 +122,12 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+  // Only listen if not running in a serverless environment (like Vercel)
+  if (!process.env.VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  }
 }
 
 startServer();

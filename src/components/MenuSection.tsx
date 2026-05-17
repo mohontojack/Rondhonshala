@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { MenuItem } from '@/types';
-import { ShoppingCart, Plus, Minus, Info } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Info, UtensilsCrossed } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 import { CATEGORIES } from '@/constants';
@@ -44,20 +44,26 @@ export function MenuSection() {
   return (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-4">আমাদের স্পেশাল মেনু</h2>
-          <p className="text-charcoal/60 max-w-2xl mx-auto font-light">প্রতিটি পদ আমরা তৈরি করি সেরা উপকরণ ও ভালোবাসা দিয়ে। আপনার পছন্দের আইটেমটি বেছে নিন।</p>
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center gap-2 px-4 py-1 bg-primary/10 text-primary rounded-full border border-primary/20 mb-6">
+            <UtensilsCrossed className="w-3 h-3" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Pure Taste</span>
+          </div>
+          <h2 className="text-5xl md:text-7xl font-display font-medium text-charcoal mb-6 tracking-tight text-balance">আমাদের <span className="text-primary italic">স্পেশাল মেনু</span></h2>
+          <p className="text-charcoal/50 max-w-xl mx-auto font-sans font-light text-lg leading-relaxed">প্রতিটি পদ আমরা তৈরি করি সেরা উপকরণ ও ভালোবাসা দিয়ে। আপনার পছন্দের আইটেমটি বেছে নিন।</p>
         </div>
 
         {/* Filter */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <div className="flex flex-wrap justify-center gap-4 mb-20 px-4">
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setFilter(cat)}
               className={cn(
-                "px-6 py-2 rounded-full font-medium transition-all",
-                filter === cat ? "bg-primary text-white shadow-lg" : "bg-primary/5 text-charcoal hover:bg-primary/10"
+                "px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.3em] transition-all border",
+                filter === cat 
+                  ? "bg-primary text-white border-primary shadow-premium scale-105" 
+                  : "bg-white text-charcoal border-accent/20 hover:border-primary/40 hover:text-primary shadow-sm"
               )}
             >
               {cat}
@@ -65,36 +71,36 @@ export function MenuSection() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {displayItems.map((item, idx) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className="group bg-white rounded-[32px] overflow-hidden border border-accent/20 hover:border-primary/40 hover:shadow-2xl transition-all duration-500"
+              transition={{ delay: idx * 0.05 }}
+              className="group bg-white rounded-[2.5rem] overflow-hidden border border-accent/10 hover:border-primary/20 shadow-premium hover:shadow-strong transition-all duration-500 flex flex-col"
             >
-              <div className="relative h-60 overflow-hidden">
+              <div className="relative h-64 overflow-hidden shrink-0">
                 <img 
                   src={item.imageUrl} 
                   alt={item.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-primary/90 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-accent/30">
+                <div className="absolute top-6 left-6">
+                  <span className="glass-dark text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-white/20">
                     {item.category}
                   </span>
                 </div>
               </div>
-              <div className="p-8 space-y-4">
-                <div>
-                  <h3 className="text-xl font-display font-bold text-charcoal group-hover:text-primary transition-colors">{item.name}</h3>
-                  <p className="text-charcoal/50 text-sm font-light mt-2 line-clamp-2 leading-relaxed">{item.description}</p>
+              <div className="p-8 flex flex-col flex-grow">
+                <div className="flex-grow">
+                  <h3 className="text-2xl font-display font-medium text-charcoal group-hover:text-primary transition-colors leading-tight mb-3">{item.name}</h3>
+                  <p className="text-charcoal/40 text-xs font-light line-clamp-2 leading-relaxed mb-6 italic">{item.description}</p>
                 </div>
-                <div className="flex items-center justify-between pt-4 border-t border-accent/10">
-                  <span className="text-2xl font-display font-black text-primary">৳{item.price}</span>
-                  <button className="p-3 bg-accent/10 text-primary rounded-2xl hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95">
+                <div className="flex items-center justify-between pt-6 border-t border-accent/5">
+                  <span className="text-3xl font-display font-black text-primary tracking-tighter">৳{item.price}</span>
+                  <button className="w-12 h-12 bg-cream text-primary rounded-2xl hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95 border border-accent/10 flex items-center justify-center">
                     <Plus className="w-5 h-5" />
                   </button>
                 </div>
