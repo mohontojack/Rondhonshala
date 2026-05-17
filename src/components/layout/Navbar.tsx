@@ -26,36 +26,42 @@ export function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   return (
     <div className="flex flex-col w-full">
       {/* Operation Notice Banner */}
-      <div className="bg-primary text-accent text-[10px] md:text-xs font-bold uppercase tracking-widest py-2 px-4 text-center border-b border-accent/20">
-        অর্ডার গ্রহণ চলছে: শুধুমাত্র শুক্রবার ও শনিবার ডেলিভারি | ইভেন্টের অন্তত ৭ দিন আগে অর্ডার করুন
+      <div className="bg-charcoal text-accent text-[9px] font-black uppercase tracking-[0.4em] py-2.5 px-4 text-center border-b border-white/5 relative z-[60]">
+        <span className="opacity-70">Exclusivity: Pre-order 7 days in advance</span>
+        <span className="mx-4 text-white/20">|</span>
+        <span className="text-white">Friday & Saturday Delivery Only</span>
       </div>
-      <nav className="sticky top-0 z-50 glass border-b border-accent/20">
+      <nav className="sticky top-0 z-50 glass border-b border-accent/20 transition-all duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-24 items-center">
-          <div className="flex items-center gap-4 cursor-pointer group" onClick={() => setActiveTab('home')}>
-            <div className="h-14 w-14 bg-primary rounded-2xl flex items-center justify-center group-hover:rotate-6 transition-all shadow-premium border border-white/20">
+          <div className="flex items-center gap-5 cursor-pointer group" onClick={() => setActiveTab('home')}>
+            <div className="h-16 w-16 bg-primary rounded-[1.5rem] flex items-center justify-center group-hover:rotate-6 transition-all shadow-premium border border-white/20 relative overflow-hidden">
+               <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent" />
                <img 
                  src="https://i.ibb.co.com/pjbz5RTt/image.png" 
                  alt="রন্ধনশালা" 
-                 className="h-10 w-auto object-contain brightness-0 invert"
+                 className="h-10 w-auto object-contain brightness-0 invert relative z-10"
                  referrerPolicy="no-referrer"
                />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-2xl font-display font-black text-charcoal tracking-tighter leading-none mb-1">রন্ধনশালা</h1>
-              <p className="text-[10px] uppercase tracking-[0.4em] text-primary font-black opacity-60">Premium Catering</p>
+              <h1 className="text-3xl font-display font-black text-charcoal tracking-tighter leading-none mb-1 group-hover:text-primary transition-colors italic">রন্ধনশালা</h1>
+              <div className="flex items-center gap-2">
+                <div className="h-0.5 w-4 bg-accent" />
+                <p className="text-[10px] uppercase tracking-[0.5em] text-primary font-black opacity-60">Est. 2012</p>
+              </div>
             </div>
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-12 text-[10px] font-black uppercase tracking-[0.3em] text-charcoal/40">
+          <div className="hidden md:flex items-center space-x-12 text-[10px] font-black uppercase tracking-[0.4em] text-charcoal/30">
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => setActiveTab(item.id as any)}
                 className={cn(
                   "relative py-2 transition-all hover:text-primary group/nav",
-                  activeTab === item.id ? "text-primary" : "text-charcoal/40"
+                  activeTab === item.id ? "text-primary" : "text-charcoal/30 font-black"
                 )}
               >
                 <span className="relative z-10">{item.label}</span>
@@ -71,24 +77,24 @@ export function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             ))}
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
             <div className="hidden xl:flex flex-col items-end">
-              <span className="text-[9px] uppercase font-black text-secondary tracking-[0.2em] opacity-60">WhatsApp & Call</span>
-              <span className="text-base font-black text-primary tracking-tighter">{CONTACT.phone}</span>
+              <span className="text-[9px] uppercase font-black text-secondary tracking-[0.3em] opacity-40 mb-1 leading-none">Inquiry Hotline</span>
+              <span className="text-xl font-black text-primary tracking-tighter leading-none">{CONTACT.phone}</span>
             </div>
             
             <button 
               onClick={() => setActiveTab('admin')}
               className={cn(
-                "w-12 h-12 rounded-2xl transition-all flex items-center justify-center border",
-                activeTab === 'admin' ? "bg-primary text-white border-primary shadow-premium" : "bg-white border-accent/20 text-charcoal/40 hover:text-primary hover:border-primary/40 shadow-sm"
+                "w-14 h-14 rounded-2xl transition-all flex items-center justify-center border group",
+                activeTab === 'admin' ? "bg-primary text-white border-primary shadow-premium" : "bg-white border-accent/20 text-charcoal/20 hover:text-primary hover:border-primary/40 shadow-sm"
               )}
             >
-              <User className="w-5 h-5" />
+              <User className={cn("w-6 h-6 transition-transform", activeTab !== 'admin' && "group-hover:scale-110")} />
             </button>
 
             <div className="md:hidden">
-              <button onClick={() => setIsOpen(!isOpen)} className="text-primary hover:bg-primary/5 p-3 rounded-2xl transition-colors border border-accent/20">
+              <button onClick={() => setIsOpen(!isOpen)} className="text-primary hover:bg-primary/5 p-4 rounded-2xl transition-colors border border-accent/20 shadow-sm bg-white">
                 {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
