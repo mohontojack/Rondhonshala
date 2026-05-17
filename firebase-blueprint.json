@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "MenuItem": {
+      "title": "Menu Item",
+      "description": "A food item available for catering",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "isAvailable": { "type": "boolean" }
+      },
+      "required": ["name", "category", "price"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A customer catering order",
+      "type": "object",
+      "properties": {
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "customerInfo": { "type": "object" },
+        "eventDate": { "type": "string" },
+        "eventType": { "type": "string" },
+        "guestCount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "delivering", "completed", "cancelled"] },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "GalleryImage": {
+      "title": "Gallery Image",
+      "description": "An image for the gallery showcase",
+      "type": "object",
+      "properties": {
+        "imageUrl": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Customer feedback and rating",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "eventType": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Admin": {
+      "title": "Admin User",
+      "description": "Authorized administrative accounts",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "menuItems": {
+      "schema": "MenuItem",
+      "description": "Collection of food items"
+    },
+    "orders": {
+      "schema": "Order",
+      "description": "Collection of customer orders"
+    },
+    "gallery": {
+      "schema": "GalleryImage",
+      "description": "Collection of gallery photos"
+    },
+    "reviews": {
+      "schema": "Review",
+      "description": "Collection of customer reviews"
+    },
+    "admins": {
+      "schema": "Admin",
+      "description": "Collection of authorized admin users (Doc ID = User UID)"
+    }
+  }
+}
