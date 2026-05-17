@@ -10,7 +10,7 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY || "NOT_SET",
   httpOptions: {
     headers: {
-      'User-Agent': 'aistudio-build-rondhonshala',
+      'User-Agent': 'aistudio-build',
     }
   }
 });
@@ -40,7 +40,7 @@ async function startServer() {
 
     try {
       const response = await ai.models.generateContent({
-        model: "gemini-flash-latest",
+        model: "gemini-3-flash-preview",
         contents: `You are a professional chef for "Rondhonshala", a premium home catering service in Dinajpur, Bangladesh.
         Create an authentic and enticing Bengali catering menu package for a ${eventType}.
         
@@ -72,11 +72,30 @@ async function startServer() {
       });
 
       const responseText = response.text;
-      if (!responseText) {
-        throw new Error("Empty response from AI model");
+      
+      console.log("AI Response Text:", responseText); // Debug log
+      
+      if (!responseText || responseText === "undefined") {
+        console.error("AI Response missing text or is string 'undefined'. Full response:", JSON.stringify(response, null, 2));
+        throw new Error("AI মডেল থেকে কোনো তথ্য পাওয়া যায়নি।");
       }
       
-      res.json(JSON.parse(responseText));
+      try {
+        const cleanedText = responseText.trim();
+        const parsedData = JSON.parse(cleanedText);
+        res.json(parsedData);
+      } catch (parseError) {
+        console.error("JSON Parse Error. Text was:", responseText);
+        // Try to extract JSON if there's markdown around it
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          try {
+            res.json(JSON.parse(jsonMatch[0]));
+            return;
+          } catch (e) {}
+        }
+        throw new Error("AI-এর পাঠানো তথ্য সঠিক ফরম্যাটে নেই।");
+      }
     } catch (error: any) {
       console.error("AI Error:", error);
       res.status(500).json({ 

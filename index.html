@@ -10,6 +10,26 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Special fix for "Uncaught TypeError: Cannot set property fetch of #<Window> which has only a getter"
+      // This often occurs in sandboxed environments (like AI Studio's preview) when 
+      // libraries (e.g., Firebase, polyfills) attempt to overwrite the global fetch function.
+      (function() {
+        try {
+          var originalFetch = window.fetch;
+          if (originalFetch) {
+            Object.defineProperty(window, 'fetch', {
+              get: function() { return originalFetch; },
+              set: function(v) { console.warn('A library attempted to override window.fetch. Original preserved.', v); },
+              configurable: true,
+              enumerable: true
+            });
+          }
+        } catch (e) {
+          console.error('Fetch protect failed:', e);
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

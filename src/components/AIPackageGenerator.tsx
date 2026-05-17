@@ -34,7 +34,18 @@ export function AIPackageGenerator() {
         body: JSON.stringify(formData),
       });
       
-      const data = await response.json();
+      const responseText = await response.text();
+      let data;
+      try {
+        if (!responseText || responseText === "undefined") {
+          data = {};
+        } else {
+          data = JSON.parse(responseText);
+        }
+      } catch (e) {
+        console.error('Failed to parse response as JSON:', responseText);
+        throw new Error('সার্ভার থেকে সঠিক তথ্য পাওয়া যায়নি।');
+      }
       
       if (!response.ok) {
         throw new Error(data.details || data.error || 'Failed to generate');
