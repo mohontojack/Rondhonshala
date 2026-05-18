@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { collection, addDoc, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '@/lib/firebase';
 import { MenuItem } from '@/types';
+import { Logo } from '@/components/Logo';
 import { 
   ShoppingBasket, Calendar, Users, Phone, MapPin, 
   CheckCircle2, Loader2, AlertCircle, Star, 
@@ -147,9 +148,12 @@ export function OrderForm() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16 relative z-10">
-          <div className="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-[0.3em] mb-4 border border-primary/20">Reservation Center</div>
+          <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-primary/10 text-primary rounded-full mb-6 border border-primary/20">
+            <Logo className="w-5 h-5" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Dinajpur's Finest Catering</span>
+          </div>
           <h2 className="text-4xl md:text-6xl font-display font-bold text-primary mb-6">আপনার ভোজের বুকিং দিন</h2>
-          <p className="text-charcoal/60 max-w-2xl mx-auto text-lg font-light italic">আমাদের সেরা রন্ধনশিল্পীদের হাতের জাদু আপনার মেহমানদের আপ্যায়নে।</p>
+          <p className="text-charcoal/60 max-w-2xl mx-auto text-lg font-light italic">দিনাজপুরের আস্থার নাম রন্ধনশালা - সেরা রন্ধনশিল্পীদের হাতের জাদু আপনার মেহমানদের আপ্যায়নে।</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10">

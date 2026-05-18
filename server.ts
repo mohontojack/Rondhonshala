@@ -1,19 +1,12 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY || "NOT_SET",
-  httpOptions: {
-    headers: {
-      'User-Agent': 'aistudio-build',
-    }
-  }
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "NOT_SET");
 
 const app = express();
 
@@ -32,71 +25,64 @@ async function startServer() {
   // AI Meal Planner Endpoint
   app.post("/api/ai/planner", async (req, res) => {
     const { eventType, guests, budget, preferences } = req.body;
+    const apiKey = process.env.GEMINI_API_KEY;
 
-    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "") {
-      console.error("Missing GEMINI_API_KEY");
+    if (!apiKey || apiKey === "" || apiKey === "NOT_SET") {
+      console.error("Missing or invalid GEMINI_API_KEY");
       return res.status(500).json({ 
         error: "Gemini API key is not configured.",
-        details: "অ্যাডমিন এখনও AI কী কনফিগার করেননি। দয়া করে অপেক্ষা করুন।" 
+        details: "অ্যাডমিন এখনও AI কী কনফিগার করেননি। দয়া করে সেটিংস থেকে আপনার API কী যোগ করুন।" 
       });
     }
 
     try {
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `You are a professional chef for "Rondhonshala", a premium home catering service in Dinajpur, Bangladesh.
-        Create an authentic and enticing Bengali catering menu package for a ${eventType}.
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        generationConfig: { responseMimeType: "application/json" }
+      });
+      const prompt = `You are a professional chef for "Rondhonshala", a premium home catering service in Dinajpur, Bangladesh.
+        Create an authentic and enticing Bengali catering menu package for a ${eventType || "অনুষ্ঠান"}. 
         
         Constraints:
-        - Guests: ${guests} people
-        - Budget: ${budget} BDT per person
+        - Guests: ${guests || 100} people
+        - Budget: ${budget || 400} BDT per person
         - Preferences: ${preferences || "Traditional Bengali homemade style"}
         
         Important: Use local Dinajpur and Bengali delicacies where possible (e.g., Kalijira rice, local fish).
         
-        Format as JSON with: 
+        Format as JSON ONLY with: 
         packageName: string (Enchanting title in Bengali/English), 
         description: string (Appetizing summary), 
         items: string[] (List of dishes in Bengali), 
-        estimatedPricePerPerson: number (Must match the budget).`,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              packageName: { type: Type.STRING },
-              description: { type: Type.STRING },
-              items: { type: Type.ARRAY, items: { type: Type.STRING } },
-              estimatedPricePerPerson: { type: Type.NUMBER }
-            },
-            required: ["packageName", "description", "items", "estimatedPricePerPerson"]
-          }
-        }
-      });
+        estimatedPricePerPerson: number (Must match the budget).`;
 
-      const responseText = response.text;
+      const result = await model.generateContent(prompt);
+      const responseText = result.response.text();
       
-      console.log("AI Response Text:", responseText); // Debug log
+      const safeText = String(responseText || "").trim();
       
-      if (!responseText || responseText === "undefined") {
-        console.error("AI Response missing text or is string 'undefined'. Full response:", JSON.stringify(response, null, 2));
-        throw new Error("AI মডেল থেকে কোনো তথ্য পাওয়া যায়নি।");
+      if (!safeText || safeText === "undefined" || safeText === "null" || safeText === "[object Object]") {
+        throw new Error("AI মডেল থেকে সঠিক তথ্য পাওয়া যায়নি।");
       }
       
       try {
-        const cleanedText = responseText.trim();
-        const parsedData = JSON.parse(cleanedText);
+        const startIndex = safeText.indexOf('{');
+        const endIndex = safeText.lastIndexOf('}');
+        
+        let jsonToParse = safeText;
+        if (startIndex !== -1 && endIndex !== -1 && endIndex >= startIndex) {
+          jsonToParse = safeText.substring(startIndex, endIndex + 1);
+        }
+
+        const finalJson = (jsonToParse || "").trim();
+        if (!finalJson || finalJson === "undefined" || finalJson === "null") {
+          throw new Error("সঠিক তথ্য পাওয়া যায়নি।");
+        }
+
+        const parsedData = JSON.parse(finalJson);
         res.json(parsedData);
       } catch (parseError) {
-        console.error("JSON Parse Error. Text was:", responseText);
-        // Try to extract JSON if there's markdown around it
-        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          try {
-            res.json(JSON.parse(jsonMatch[0]));
-            return;
-          } catch (e) {}
-        }
+        console.error("JSON Parse Error. Text was:", safeText);
         throw new Error("AI-এর পাঠানো তথ্য সঠিক ফরম্যাটে নেই।");
       }
     } catch (error: any) {

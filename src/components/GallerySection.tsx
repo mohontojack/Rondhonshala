@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Camera, ZoomIn } from 'lucide-react';
+import { Camera, ZoomIn, ArrowRight } from 'lucide-react';
 
 interface GalleryProps {
   limit?: number;
@@ -18,41 +18,79 @@ export function GallerySection({ limit }: GalleryProps) {
   const displayImages = limit ? images.slice(0, limit) : images;
 
   return (
-    <section className="py-24 bg-white overflow-hidden">
+    <section className="py-32 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-6">
           <div className="max-w-xl">
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-4">আমাদের গ্যালারি</h2>
-            <p className="text-charcoal/60 font-light">আমাদের ইভেন্টগুলোর কিছু স্মরণীয় মুহূর্ত ও খাবারের চমৎকার উপস্থাপনা এখানে দেখুন।</p>
+             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 text-primary rounded-full mb-6">
+              <Camera className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-black uppercase tracking-[0.3em]">Candid Moments</span>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-display font-medium text-charcoal mb-4 tracking-tighter">আমাদের <span className="text-primary italic">গ্যালারি</span></h2>
+            <p className="text-charcoal/50 font-sans font-light text-lg">আমাদের ইভেন্টগুলোর কিছু স্মরণীয় মুহূর্ত ও খাবারের চমৎকার উপস্থাপনা এখানে দেখুন।</p>
           </div>
-          <button className="flex items-center gap-2 text-primary font-bold hover:underline">
-            সকল ছবি দেখুন <Camera className="w-5 h-5" />
+          <button className="flex items-center gap-3 text-primary text-[10px] font-black uppercase tracking-[0.3em] hover:translate-x-2 transition-transform">
+            সকল ছবি দেখুন <ArrowRight className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayImages.map((img, idx) => (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 h-full md:h-[1200px]">
+          {/* Main Large Item */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="md:col-span-2 md:row-span-2 relative group rounded-[4rem] overflow-hidden border border-charcoal/5 shadow-premium"
+          >
+            <img 
+              src={images[0].url} 
+              alt={images[0].title} 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-12 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+               <h3 className="text-white text-3xl font-display font-medium italic mb-2">{images[0].title}</h3>
+               <p className="text-white/60 text-sm">দিনাজপুরের সিগনেচার বিয়ের আয়োজন</p>
+            </div>
+          </motion.div>
+
+          {/* Tall Item */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="md:col-span-1 md:row-span-2 relative group rounded-[4rem] overflow-hidden border border-charcoal/5 shadow-premium"
+          >
+            <img 
+              src={images[1].url} 
+              alt={images[1].title} 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+               <h3 className="text-white text-2xl font-display font-medium italic">{images[1].title}</h3>
+            </div>
+          </motion.div>
+
+          {/* Regular Items */}
+          {[2, 3, 4, 5].map((idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="relative group h-[400px] rounded-[48px] overflow-hidden border-4 border-accent/20 shadow-lg"
+              transition={{ delay: 0.1 * idx }}
+              className="relative group rounded-[3rem] overflow-hidden border border-charcoal/5 shadow-premium h-[300px] md:h-auto"
             >
               <img 
-                src={img.url} 
-                alt={img.title} 
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                src={images[idx].url} 
+                alt={images[idx].title} 
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-10">
-                <div className="flex justify-between items-center transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                  <h3 className="text-white text-2xl font-display font-medium italic">{img.title}</h3>
-                  <div className="p-3 bg-accent text-primary rounded-full shadow-lg">
-                    <ZoomIn className="w-5 h-5" />
-                  </div>
-                </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <h3 className="text-white text-xl font-display font-medium italic">{images[idx].title}</h3>
               </div>
             </motion.div>
           ))}

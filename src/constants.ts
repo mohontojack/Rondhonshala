@@ -3,7 +3,7 @@ export const CONTACT = {
   whatsapp: '8801968693933',
   email: 'info@rondhonshala.com',
   address: 'দিনাজপুর সদর, দিনাজপুর-৫২০০',
-  facebook: 'fb.com/rondhonshala',
+  facebook: 'https://www.facebook.com/rondhonshalaoff',
 };
 
 export const CATEGORIES = ['সব', 'মাংস', 'মাছ', 'বিরিয়ানি', 'সবজি ও ডাল', 'মিষ্টি'];

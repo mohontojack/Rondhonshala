@@ -10,12 +10,19 @@ import { ReviewsSection } from './components/ReviewsSection';
 import { OrderForm } from './components/OrderForm';
 import { AdminDashboard } from './components/AdminDashboard';
 import { AIPackageGenerator } from './components/AIPackageGenerator';
+import { RecipesSection } from './components/RecipesSection';
+import { BlogSection } from './components/BlogSection';
+import { HeritageBanner } from './components/HeritageBanner';
 import { auth } from './lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'home' | 'menu' | 'packages' | 'order' | 'gallery' | 'reviews' | 'admin'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'menu' | 'packages' | 'order' | 'gallery' | 'reviews' | 'blog' | 'recipes' | 'admin'>('home');
   const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeTab]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -30,29 +37,36 @@ export default function App() {
         return (
           <>
             <Hero onMenuClick={() => setActiveTab('menu')} onOrderClick={() => setActiveTab('packages')} />
-            <CateringPackages />
+            <CateringPackages onOrderClick={() => setActiveTab('order')} />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
               <AIPackageGenerator />
             </div>
+            <RecipesSection />
+            <HeritageBanner />
             <GallerySection limit={6} />
+            <BlogSection />
             <ReviewsSection />
           </>
         );
       case 'packages':
         return (
           <div className="space-y-12 py-12">
-            <CateringPackages />
+            <CateringPackages onOrderClick={() => setActiveTab('order')} />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <AIPackageGenerator />
             </div>
           </div>
         );
       case 'menu':
-        return <MenuSection />;
+        return <MenuSection onOrderClick={() => setActiveTab('order')} />;
       case 'order':
         return <OrderForm />;
       case 'gallery':
         return <GallerySection />;
+      case 'blog':
+        return <BlogSection />;
+      case 'recipes':
+        return <RecipesSection />;
       case 'reviews':
         return <ReviewsSection />;
       case 'admin':

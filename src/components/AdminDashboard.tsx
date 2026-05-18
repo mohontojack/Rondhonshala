@@ -165,9 +165,14 @@ export function AdminDashboard() {
             </p>
           </div>
         </div>
-        <button onClick={() => auth.signOut()} className="flex items-center gap-2 text-red-500 font-black text-sm uppercase tracking-widest hover:bg-red-50 px-6 py-3 rounded-2xl transition-all border border-transparent hover:border-red-100">
-          <LogOut className="w-5 h-5" /> লগআউট 
-        </button>
+        <div className="flex items-center gap-4">
+          <button onClick={fetchData} className="p-4 bg-white border border-accent/10 text-charcoal/40 hover:text-primary hover:border-primary/40 rounded-2xl transition-all shadow-sm active:rotate-180 duration-500">
+            <LayoutDashboard className="w-6 h-6" />
+          </button>
+          <button onClick={() => auth.signOut()} className="flex items-center gap-2 text-red-500 font-black text-sm uppercase tracking-widest hover:bg-red-50 px-6 py-3 rounded-2xl transition-all border border-transparent hover:border-red-100">
+            <LogOut className="w-5 h-5" /> লগআউট 
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-4 mb-10 border-b border-accent/10 pb-6 overflow-x-auto">
